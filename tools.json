@@ -1,0 +1,286 @@
+{
+  "tools": [
+    {
+      "name": "check_railway_status",
+      "description": "Verify API access and authentication. Returns the current user's information if authenticated.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "list_projects",
+      "description": "List all accessible Railway projects with their environments and services.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "create_project_and_link",
+      "description": "Create a new Railway project with optional description and default environment name.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Project name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional project description"
+          },
+          "default_environment_name": {
+            "type": "string",
+            "description": "Name for the default environment (defaults to 'production')"
+          }
+        },
+        "required": ["name"]
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "List services in a Railway project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "Project ID"
+          }
+        },
+        "required": ["project_id"]
+      }
+    },
+    {
+      "name": "link_service",
+      "description": "Get service details for context/linking.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service_id": {
+            "type": "string",
+            "description": "Service ID to link"
+          }
+        },
+        "required": ["service_id"]
+      }
+    },
+    {
+      "name": "deploy",
+      "description": "Trigger deployment for a service in a specific environment.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service_id": {
+            "type": "string",
+            "description": "Service ID to deploy"
+          },
+          "environment_id": {
+            "type": "string",
+            "description": "Environment ID to deploy to"
+          }
+        },
+        "required": ["service_id", "environment_id"]
+      }
+    },
+    {
+      "name": "list_deployments",
+      "description": "List deployments for a service with status and metadata.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service_id": {
+            "type": "string",
+            "description": "Service ID"
+          },
+          "environment_id": {
+            "type": "string",
+            "description": "Environment ID"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of deployments to return (default: 10)",
+            "default": 10
+          }
+        },
+        "required": ["service_id", "environment_id"]
+      }
+    },
+    {
+      "name": "get_logs",
+      "description": "Retrieve build or deployment logs for a specific deployment.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "deployment_id": {
+            "type": "string",
+            "description": "Deployment ID"
+          },
+          "log_type": {
+            "type": "string",
+            "description": "Type of logs to retrieve ('build' or 'deployment')",
+            "enum": ["build", "deployment"],
+            "default": "deployment"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of log entries (default: 100)",
+            "default": 100
+          }
+        },
+        "required": ["deployment_id"]
+      }
+    },
+    {
+      "name": "list_environments",
+      "description": "List environments in a Railway project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "Project ID"
+          }
+        },
+        "required": ["project_id"]
+      }
+    },
+    {
+      "name": "create_environment",
+      "description": "Create a new environment in a Railway project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "Project ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Environment name"
+          }
+        },
+        "required": ["project_id", "name"]
+      }
+    },
+    {
+      "name": "link_environment",
+      "description": "Get environment details for context/linking.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "Project ID (for validation)"
+          },
+          "environment_id": {
+            "type": "string",
+            "description": "Environment ID to link"
+          }
+        },
+        "required": ["project_id", "environment_id"]
+      }
+    },
+    {
+      "name": "list_variables",
+      "description": "List environment variables for a project, environment, or service.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "Project ID"
+          },
+          "environment_id": {
+            "type": "string",
+            "description": "Environment ID"
+          },
+          "service_id": {
+            "type": "string",
+            "description": "Optional service ID (for service-specific variables)"
+          }
+        },
+        "required": ["project_id", "environment_id"]
+      }
+    },
+    {
+      "name": "set_variables",
+      "description": "Set environment variables for a project, environment, or service.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "Project ID"
+          },
+          "environment_id": {
+            "type": "string",
+            "description": "Environment ID"
+          },
+          "variables": {
+            "type": "object",
+            "description": "Dictionary of variable names and values to set",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "service_id": {
+            "type": "string",
+            "description": "Optional service ID (for service-specific variables)"
+          }
+        },
+        "required": ["project_id", "environment_id", "variables"]
+      }
+    },
+    {
+      "name": "generate_domain",
+      "description": "Generate a railway.app domain for a service.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service_id": {
+            "type": "string",
+            "description": "Service ID"
+          },
+          "environment_id": {
+            "type": "string",
+            "description": "Environment ID"
+          }
+        },
+        "required": ["service_id", "environment_id"]
+      }
+    },
+    {
+      "name": "deploy_template",
+      "description": "Deploy from Railway Template Library (e.g., redis, postgres, mysql).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "description": "Project ID to deploy to"
+          },
+          "environment_id": {
+            "type": "string",
+            "description": "Environment ID to deploy to"
+          },
+          "template_code": {
+            "type": "string",
+            "description": "Template code (e.g., 'redis', 'postgres')"
+          },
+          "services": {
+            "type": "array",
+            "description": "Optional list of service configurations",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": ["project_id", "environment_id", "template_code"]
+      }
+    }
+  ]
+}

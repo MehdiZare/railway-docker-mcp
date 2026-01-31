@@ -1,0 +1,25 @@
+name: railway-mcp
+type: server
+image: docker.io/mehdizare/railway-mcp:latest
+description: MCP server for Railway platform - deploy and manage Railway projects, services, environments, and deployments
+about:
+  title: Railway MCP
+  description: Deploy and manage Railway platform projects, services, environments, and deployments through an MCP interface
+  icon: https://railway.app/brand/logo-light.svg
+meta:
+  category: cloud
+  tags:
+    - cloud
+    - deployment
+    - infrastructure
+    - railway
+    - paas
+config:
+  secrets:
+    - name: railway-mcp.railway_token
+      description: Railway API token for authentication
+      env: RAILWAY_TOKEN
+      required: true
+source:
+  project: https://github.com/MehdiZare/railway-docker-mcp
+  commit: <to-be-updated-before-submission>
