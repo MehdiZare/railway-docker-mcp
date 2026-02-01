@@ -1,6 +1,6 @@
 name: railway-mcp
 type: server
-image: docker.io/mehdizare/railway-mcp:latest
+image: docker.io/mehdizare/railway-mcp:v0.1.0
 description: MCP server for Railway platform - deploy and manage Railway projects, services, environments, and deployments
 about:
   title: Railway MCP

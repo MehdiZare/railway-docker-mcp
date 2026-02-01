@@ -45,9 +45,17 @@ async def link_service(client: RailwayClient, service_id: str) -> dict[str, Any]
 
     Returns:
         Service information
+
+    Raises:
+        ServiceNotFoundError: If service is not found
     """
+    from ..exceptions import ServiceNotFoundError
+
     data = await client.execute(GET_SERVICE_QUERY, {"serviceId": service_id})
     service = data.get("service", {})
+
+    if not service.get("id"):
+        raise ServiceNotFoundError(f"Service {service_id} not found")
 
     return {
         "id": service.get("id"),

@@ -12,6 +12,7 @@ async def list_variables(
     project_id: str,
     environment_id: str,
     service_id: str | None = None,
+    include_values: bool = False,
 ) -> dict[str, str]:
     """List environment variables.
 
@@ -20,9 +21,10 @@ async def list_variables(
         project_id: Project ID
         environment_id: Environment ID
         service_id: Optional service ID (for service-specific variables)
+        include_values: If True, return actual values; if False, return masked values
 
     Returns:
-        Dictionary of variable names and values
+        Dictionary of variable names and values (masked or actual based on include_values)
     """
     variables = {
         "projectId": project_id,
@@ -34,7 +36,13 @@ async def list_variables(
     data = await client.execute(LIST_VARIABLES_QUERY, variables)
 
     # The variables query returns a JSON object directly
-    return data.get("variables", {})
+    result = data.get("variables", {})
+
+    if not include_values:
+        # Mask all values for security
+        return dict.fromkeys(result, "***")
+
+    return result
 
 
 async def set_variables(

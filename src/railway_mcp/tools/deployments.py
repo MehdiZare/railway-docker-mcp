@@ -50,6 +50,9 @@ async def list_deployments(
     return deployments
 
 
+VALID_LOG_TYPES = {"build", "deployment"}
+
+
 async def get_logs(
     client: RailwayClient,
     deployment_id: str,
@@ -66,7 +69,15 @@ async def get_logs(
 
     Returns:
         List of log entries
+
+    Raises:
+        ValueError: If log_type is not valid
     """
+    if log_type not in VALID_LOG_TYPES:
+        raise ValueError(
+            f"Invalid log_type '{log_type}'. Must be one of: {', '.join(sorted(VALID_LOG_TYPES))}"
+        )
+
     if log_type == "build":
         query = GET_BUILD_LOGS_QUERY
         key = "buildLogs"

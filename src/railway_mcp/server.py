@@ -1,5 +1,6 @@
 """FastMCP server for Railway."""
 
+import sys
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import Any
@@ -8,6 +9,7 @@ from fastmcp import Context, FastMCP
 
 from .client import RailwayClient
 from .config import get_settings
+from .exceptions import AuthenticationError
 from .tools import deployments as deployment_tools
 from .tools import domains as domain_tools
 from .tools import environments as environment_tools
@@ -31,10 +33,14 @@ async def lifespan(mcp: FastMCP):
     settings = get_settings()
     client = RailwayClient(settings.railway_token, settings.railway_api_url)
 
-    async with client:
-        # Verify token on startup
-        await client.verify_token()
-        yield AppContext(client=client)
+    try:
+        async with client:
+            # Verify token on startup
+            await client.verify_token()
+            yield AppContext(client=client)
+    except AuthenticationError as e:
+        print(f"FATAL: Railway API authentication failed: {e}", file=sys.stderr)
+        sys.exit(1)
 
 
 # Create the MCP server
@@ -200,6 +206,17 @@ async def link_environment(
     return await environment_tools.link_environment(client, project_id, environment_id)
 
 
+@mcp.tool()
+async def list_environments(ctx: Context, project_id: str) -> list[dict[str, Any]]:
+    """List environments in a project.
+
+    Args:
+        project_id: The Railway project ID
+    """
+    client = get_client(ctx)
+    return await environment_tools.list_environments(client, project_id)
+
+
 # Variable tools
 @mcp.tool()
 async def list_variables(
@@ -207,6 +224,7 @@ async def list_variables(
     project_id: str,
     environment_id: str,
     service_id: str | None = None,
+    include_values: bool = False,
 ) -> dict[str, str]:
     """List environment variables.
 
@@ -214,9 +232,12 @@ async def list_variables(
         project_id: The Railway project ID
         environment_id: The Railway environment ID
         service_id: Optional service ID for service-specific variables
+        include_values: If True, return actual values; if False, return masked values (default: False)
     """
     client = get_client(ctx)
-    return await variable_tools.list_variables(client, project_id, environment_id, service_id)
+    return await variable_tools.list_variables(
+        client, project_id, environment_id, service_id, include_values
+    )
 
 
 @mcp.tool()
@@ -279,3 +300,25 @@ async def deploy_template(
     return await template_tools.deploy_template(
         client, project_id, environment_id, template_code, services
     )
+
+
+@mcp.tool()
+async def list_templates(ctx: Context, limit: int = 50) -> list[dict[str, Any]]:
+    """List available templates from Railway Template Library.
+
+    Args:
+        limit: Maximum number of templates to return (default: 50)
+    """
+    client = get_client(ctx)
+    return await template_tools.list_templates(client, limit)
+
+
+@mcp.tool()
+async def get_template(ctx: Context, code: str) -> dict[str, Any]:
+    """Get template details.
+
+    Args:
+        code: Template code (e.g., "redis", "postgres")
+    """
+    client = get_client(ctx)
+    return await template_tools.get_template(client, code)
