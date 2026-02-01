@@ -1,0 +1,272 @@
+{
+  "tools": [
+    {
+      "name": "check_railway_status",
+      "description": "Verify API access and authentication. Returns the current user's information if authenticated."
+    },
+    {
+      "name": "list_projects",
+      "description": "List all accessible Railway projects with their environments and services."
+    },
+    {
+      "name": "create_project_and_link",
+      "description": "Create a new Railway project with optional description and default environment name.",
+      "arguments": [
+        {
+          "name": "name",
+          "description": "Project name",
+          "required": true
+        },
+        {
+          "name": "description",
+          "description": "Optional project description",
+          "required": false
+        },
+        {
+          "name": "default_environment_name",
+          "description": "Name for the default environment (defaults to 'production')",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "list_services",
+      "description": "List services in a Railway project.",
+      "arguments": [
+        {
+          "name": "project_id",
+          "description": "Project ID",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "link_service",
+      "description": "Get service details for context/linking.",
+      "arguments": [
+        {
+          "name": "service_id",
+          "description": "Service ID to link",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "deploy",
+      "description": "Trigger deployment for a service in a specific environment.",
+      "arguments": [
+        {
+          "name": "service_id",
+          "description": "Service ID to deploy",
+          "required": true
+        },
+        {
+          "name": "environment_id",
+          "description": "Environment ID to deploy to",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "list_deployments",
+      "description": "List deployments for a service with status and metadata.",
+      "arguments": [
+        {
+          "name": "service_id",
+          "description": "Service ID",
+          "required": true
+        },
+        {
+          "name": "environment_id",
+          "description": "Environment ID",
+          "required": true
+        },
+        {
+          "name": "limit",
+          "description": "Maximum number of deployments to return (default: 10)",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "get_logs",
+      "description": "Retrieve build or deployment logs for a specific deployment.",
+      "arguments": [
+        {
+          "name": "deployment_id",
+          "description": "Deployment ID",
+          "required": true
+        },
+        {
+          "name": "log_type",
+          "description": "Type of logs to retrieve ('build' or 'deployment')",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "description": "Maximum number of log entries (default: 100)",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "list_environments",
+      "description": "List environments in a Railway project.",
+      "arguments": [
+        {
+          "name": "project_id",
+          "description": "Project ID",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "create_environment",
+      "description": "Create a new environment in a Railway project.",
+      "arguments": [
+        {
+          "name": "project_id",
+          "description": "Project ID",
+          "required": true
+        },
+        {
+          "name": "name",
+          "description": "Environment name",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "link_environment",
+      "description": "Get environment details for context/linking.",
+      "arguments": [
+        {
+          "name": "project_id",
+          "description": "Project ID (for validation)",
+          "required": true
+        },
+        {
+          "name": "environment_id",
+          "description": "Environment ID to link",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "list_variables",
+      "description": "List environment variables for a project, environment, or service. Values are masked by default for security.",
+      "arguments": [
+        {
+          "name": "project_id",
+          "description": "Project ID",
+          "required": true
+        },
+        {
+          "name": "environment_id",
+          "description": "Environment ID",
+          "required": true
+        },
+        {
+          "name": "service_id",
+          "description": "Optional service ID (for service-specific variables)",
+          "required": false
+        },
+        {
+          "name": "include_values",
+          "description": "If true, return actual values; if false, return masked values (default: false)",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "set_variables",
+      "description": "Set environment variables for a project, environment, or service.",
+      "arguments": [
+        {
+          "name": "project_id",
+          "description": "Project ID",
+          "required": true
+        },
+        {
+          "name": "environment_id",
+          "description": "Environment ID",
+          "required": true
+        },
+        {
+          "name": "variables",
+          "description": "Dictionary of variable names and values to set",
+          "required": true
+        },
+        {
+          "name": "service_id",
+          "description": "Optional service ID (for service-specific variables)",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "generate_domain",
+      "description": "Generate a railway.app domain for a service.",
+      "arguments": [
+        {
+          "name": "service_id",
+          "description": "Service ID",
+          "required": true
+        },
+        {
+          "name": "environment_id",
+          "description": "Environment ID",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "deploy_template",
+      "description": "Deploy from Railway Template Library (e.g., redis, postgres, mysql).",
+      "arguments": [
+        {
+          "name": "project_id",
+          "description": "Project ID to deploy to",
+          "required": true
+        },
+        {
+          "name": "environment_id",
+          "description": "Environment ID to deploy to",
+          "required": true
+        },
+        {
+          "name": "template_code",
+          "description": "Template code (e.g., 'redis', 'postgres')",
+          "required": true
+        },
+        {
+          "name": "services",
+          "description": "Optional list of service configurations",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "list_templates",
+      "description": "List available templates from Railway Template Library.",
+      "arguments": [
+        {
+          "name": "limit",
+          "description": "Maximum number of templates to return (default: 50)",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "get_template",
+      "description": "Get template details including services configuration.",
+      "arguments": [
+        {
+          "name": "code",
+          "description": "Template code (e.g., 'redis', 'postgres')",
+          "required": true
+        }
+      ]
+    }
+  ]
+}
